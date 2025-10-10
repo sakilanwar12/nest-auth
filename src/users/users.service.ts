@@ -1,11 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  BadRequestException,
+} from '@nestjs/common';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from 'generated/prisma';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private prisma: PrismaService) {}
+
+  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
+    const { name, email, password } = createUserDto;
+
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+        },
+      });
+      return user;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new InternalServerErrorException(error.message);
+      }
+      throw new InternalServerErrorException('Unexpected error occurred');
+    }
   }
 
   findAll() {
