@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
-const port = parseInt(process.env.PORT ?? '3000', 10);
+import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(port);
+
+  app.useGlobalPipes(new ZodValidationPipe());
+
+  await app.listen(3000);
 }
 void bootstrap();
