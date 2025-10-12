@@ -1,6 +1,7 @@
 import { IsString, IsEmail, MinLength, IsOptional } from 'class-validator';
+import { IUser } from '../users.interface';
 
-export class CreateUserDto {
+export class CreateUserDto implements Partial<IUser> {
   @IsString()
   name: string;
 
