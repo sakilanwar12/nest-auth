@@ -13,8 +13,10 @@ export class UsersController {
 
   // POST /users
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<IUser> {
-    return this.usersService.create(createUserDto);
+  @ApiResponse({ status: 201, description: 'User created', type: UserDto })
+  async create(@Body() createUserDto: CreateUserDto): Promise<IUser> {
+    const user = await this.usersService.create(createUserDto);
+    return user;
   }
 
   // GET /users
@@ -24,7 +26,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'List of users with pagination',
-    type: ApiResponseDto<UserDto>,
+    type: ApiResponseDto,
   })
   async findAll(@Query() query: PaginationQuery) {
     return this.usersService.findAll(query.page, query.limit);
