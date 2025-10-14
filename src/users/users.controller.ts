@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-// import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from './users.interface';
 import { CreateUserDto } from './schemas/user.schemas';
+import { PaginationQuery } from 'src/lib/query/pagination-query';
 
 @Controller('users')
 export class UsersController {
@@ -16,7 +16,7 @@ export class UsersController {
 
   // GET /users
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(@Query() query: PaginationQuery) {
+    return this.usersService.findAll(query.page, query.limit);
   }
 }
