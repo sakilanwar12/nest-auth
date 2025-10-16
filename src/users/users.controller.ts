@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { IUser } from './users.interface';
 import { CreateUserDto } from './schemas/user.schemas';
@@ -30,5 +38,10 @@ export class UsersController {
   })
   async findAll(@Query() query: PaginationQuery) {
     return this.usersService.findAll(query.page, query.limit);
+  }
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'Get single user', type: UserDto })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 }
