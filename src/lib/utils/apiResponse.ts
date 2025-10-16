@@ -21,12 +21,12 @@ export function apiResponse<T>({
   };
 
   if (success) {
+    if (message) {
+      response.message = message;
+    }
     response.data = data;
     if (pagination) {
       response.pagination = pagination;
-    }
-    if (message) {
-      response.message = message;
     }
   } else {
     response.message = message || 'Something went wrong';

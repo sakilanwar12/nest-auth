@@ -1,4 +1,4 @@
-export class User {
+export class IUser {
   id: number;
   name: string;
   email: string;
@@ -7,3 +7,4 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
 }
+export type ISafeUser = Omit<IUser, 'password'>;

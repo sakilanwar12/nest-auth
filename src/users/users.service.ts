@@ -6,15 +6,16 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from './users.interface';
-import { apiResponse } from 'src/lib/utils/apiResponse';
 import * as bcrypt from 'bcrypt';
 import { envVar } from 'src/config/envVar';
+import { omit } from 'src/lib/utils/omit';
+import { ISafeUser } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
   // Create User
-  async create(createUserDto: CreateUserDto): Promise<IUser> {
+  async create(createUserDto: CreateUserDto): Promise<ISafeUser> {
     const { name, email, password, role } = createUserDto;
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
@@ -33,9 +34,12 @@ export class UsersService {
       role,
     };
 
-    return this.prisma.user.create({
+    const createdUser = await this.prisma.user.create({
       data: user,
     });
+    const safeUser = omit(createdUser, ['password']);
+
+    return safeUser;
   }
   async findAll(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
@@ -55,7 +59,10 @@ export class UsersService {
       totalPages: Math.ceil(total / limit),
     };
 
-    return apiResponse({ data, pagination });
+    return {
+      data,
+      pagination,
+    };
   }
   async findOne(id: number): Promise<Omit<IUser, 'password'>> {
     const user = await this.prisma.user.findUnique({
@@ -65,9 +72,20 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
+    const safeUser = omit(user, ['password']);
 
-    return result;
+    return safeUser;
+  }
+  async remove(id: number): Promise<Omit<IUser, 'password'>> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    const deletedUser = await this.prisma.user.delete({ where: { id } });
+
+    const safeUser = omit(deletedUser, ['password']);
+
+    return safeUser;
   }
 }

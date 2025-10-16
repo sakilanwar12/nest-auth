@@ -6,14 +6,15 @@ import {
   Query,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { IUser } from './users.interface';
 import { CreateUserDto } from './schemas/user.schemas';
 import { PaginationQuery } from 'src/lib/query/pagination-query';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiResponseDto } from 'src/lib/dtos/api-response.dto';
 import { UserDto } from './dto/user.dto';
+import { apiResponse } from 'src/lib/utils/apiResponse';
 
 @Controller('users')
 export class UsersController {
@@ -22,9 +23,9 @@ export class UsersController {
   // POST /users
   @Post()
   @ApiResponse({ status: 201, description: 'User created', type: UserDto })
-  async create(@Body() createUserDto: CreateUserDto): Promise<IUser> {
+  async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
-    return user;
+    return apiResponse({ data: user, message: 'User created successfully' });
   }
 
   // GET /users
@@ -37,11 +38,38 @@ export class UsersController {
     type: ApiResponseDto,
   })
   async findAll(@Query() query: PaginationQuery) {
-    return this.usersService.findAll(query.page, query.limit);
+    const users = await this.usersService.findAll(query.page, query.limit);
+    const { data, pagination } = users;
+    return apiResponse({
+      data,
+      pagination,
+      message: 'Users created successfully',
+    });
   }
+  // GET /users/:id
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Get single user', type: UserDto })
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+    const data = await this.usersService.findOne(id);
+    return apiResponse({
+      data,
+      message: 'User get successfully',
+      statusCode: 200,
+    });
+  }
+  // DELETE /users/:id
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'User deleted successfully',
+    type: UserDto,
+  })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.usersService.remove(id);
+    return apiResponse({
+      data,
+      message: 'Deleted successfully',
+      statusCode: 200,
+    });
   }
 }
