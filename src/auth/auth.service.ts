@@ -1,11 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-
+import { ISafeAuthUser } from './entities/auth.entity';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { envVar } from 'src/config/envVar';
+import * as bcrypt from 'bcrypt';
+import { omit } from 'src/lib/utils/omit';
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createUserDto: CreateAuthDto): Promise<ISafeAuthUser> {
+    const { name, email, password, role } = createUserDto;
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    const saltRounds = envVar.PASSWORD_SALT;
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = {
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    };
+
+    const createdUser = await this.prisma.user.create({
+      data: user,
+    });
+    const safeUser = omit(createdUser, ['password']);
+
+    return safeUser;
   }
 
   findAll() {

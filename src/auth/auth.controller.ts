@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { ApiResponse } from '@nestjs/swagger';
+import { AuthUserSchemaDto } from './schemas/auth-user.schema';
+import { AuthUserDto } from './dto/auth-user.dto';
+import { apiResponse } from 'src/lib/utils/apiResponse';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('/register')
+  @ApiResponse({ status: 201, description: 'User created', type: AuthUserDto })
+  async create(@Body() createUserDto: AuthUserSchemaDto) {
+    const user = await this.authService.create(createUserDto);
+    return apiResponse({
+      data: user,
+      message: 'User Registration successfully',
+    });
   }
 
   @Get()
