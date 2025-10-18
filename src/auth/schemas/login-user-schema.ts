@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 
-export const AuthUserSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
+export const loginUserSchema = z.object({
   email: z.email({ message: 'Invalid email format' }),
   password: z
     .string()
@@ -11,4 +10,4 @@ export const AuthUserSchema = z.object({
 });
 
 // ✅ Must extend createZodDto
-export class AuthUserSchemaDto extends createZodDto(AuthUserSchema) {}
+export class loginUserSchemaDto extends createZodDto(loginUserSchema) {}

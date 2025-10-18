@@ -13,6 +13,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { AuthUserSchemaDto } from './schemas/auth-user.schema';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { apiResponse } from 'src/lib/utils/apiResponse';
+import { loginUserSchemaDto } from './schemas/login-user-schema';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +26,15 @@ export class AuthController {
     return apiResponse({
       data: user,
       message: 'User Registration successfully',
+    });
+  }
+  @Post('/login')
+  @ApiResponse({ status: 201, description: 'User login', type: AuthUserDto })
+  async login(@Body() loginUserDto: loginUserSchemaDto) {
+    const user = await this.authService.login(loginUserDto);
+    return apiResponse({
+      data: user,
+      message: 'User login successfully',
     });
   }
 
