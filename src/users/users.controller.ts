@@ -10,11 +10,12 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './schemas/user.schemas';
-import { PaginationQuery } from 'src/lib/query/pagination-query';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiResponseDto } from 'src/lib/dtos/api-response.dto';
 import { UserDto } from './dto/user.dto';
 import { apiResponse } from 'src/lib/utils/apiResponse';
+import { PaginationQueryDto } from 'src/lib/pagination/pagination-query.dto';
+import { extractQueryObject } from 'src/lib/pagination/pagination.util';
 
 @Controller('users')
 export class UsersController {
@@ -31,14 +32,18 @@ export class UsersController {
   // GET /users
   @Get()
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
-  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'pageSize', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String, example: 'name' })
+  @ApiQuery({ name: 'sort', required: false, type: String, example: 'name' })
   @ApiResponse({
     status: 200,
     description: 'List of users with pagination',
     type: ApiResponseDto,
   })
-  async findAll(@Query() query: PaginationQuery) {
-    const users = await this.usersService.findAll(query.page, query.limit);
+  async findAll(@Query() query: PaginationQueryDto) {
+    const queryObj = extractQueryObject(query);
+
+    const users = await this.usersService.findAll(queryObj);
     const { data, pagination } = users;
     return apiResponse({
       data,

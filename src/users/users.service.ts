@@ -10,7 +10,13 @@ import * as bcrypt from 'bcrypt';
 import { envVar } from 'src/config/envVar';
 import { omit } from 'src/lib/utils/omit';
 import { ISafeUser } from './entities/user.entity';
-
+interface QueryObject<T = {}> {
+  page: number;
+  pageSize: number;
+  search?: string;
+  sort?: string;
+  filters?: T;
+}
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -41,28 +47,66 @@ export class UsersService {
 
     return safeUser;
   }
-  async findAll(page = 1, limit = 10) {
-    const skip = (page - 1) * limit;
+  async findAll<T extends object = {}>(query: QueryObject<T>) {
+    const { page, pageSize, search, sort, filters } = query;
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+    const where: any = {};
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    if (filters) {
+      Object.assign(where, filters);
+    }
+    const orderBy: any = {};
+    if (sort) {
+      // You can improve this to handle asc/desc later
+      orderBy[sort] = 'asc';
+    } else {
+      orderBy['createdAt'] = 'desc'; // default
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.user.findMany({
         skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
+        take,
+        where,
+        orderBy,
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where }),
     ]);
-    const pagination = {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    };
-
+    const totalPages = Math.ceil(total / take);
     return {
       data,
-      pagination,
+      pagination: {
+        total,
+        page,
+        limit: take,
+        totalPages,
+      },
     };
+    // const [data, total] = await Promise.all([
+    //   this.prisma.user.findMany({
+    //     skip: 1,
+    //     take: 2,
+    //     orderBy: { createdAt: 'desc' },
+    //   }),
+    //   this.prisma.user.count(),
+    // ]);
+    // const pagination = {
+    //   total,
+    //   page,
+    //   limit,
+    //   totalPages: Math.ceil(total / limit),
+    // };
+
+    // return {
+    //   data,
+    //   pagination,
+    // };
   }
   async findOne(id: number): Promise<Omit<IUser, 'password'>> {
     const user = await this.prisma.user.findUnique({
