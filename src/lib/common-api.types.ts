@@ -7,3 +7,10 @@ export interface ApiResponse<T> {
 export interface TypedResponse extends ExpressResponse {
   statusCode: number;
 }
+export interface IQueryObject<T> {
+  page: number;
+  pageSize: number;
+  search?: string;
+  sort?: string;
+  filters?: T;
+}

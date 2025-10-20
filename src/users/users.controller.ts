@@ -14,8 +14,9 @@ import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiResponseDto } from 'src/lib/dtos/api-response.dto';
 import { UserDto } from './dto/user.dto';
 import { apiResponse } from 'src/lib/utils/apiResponse';
-import { PaginationQueryDto } from 'src/lib/pagination/pagination-query.dto';
+
 import { extractQueryObject } from 'src/lib/pagination/pagination.util';
+import { PaginationQueryDto } from 'src/common/pagination/pagination-query.dto';
 
 @Controller('users')
 export class UsersController {

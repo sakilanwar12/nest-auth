@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaModule } from '../prisma/prisma.module';
+import { PaginationModule } from 'src/common/pagination/pagination.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, PaginationModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

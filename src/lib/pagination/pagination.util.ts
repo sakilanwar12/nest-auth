@@ -1,5 +1,5 @@
+import { PaginationQueryDto } from 'src/common/pagination/pagination-query.dto';
 import convertToNumber from '../numbers/convertToNumber';
-import { PaginationQueryDto } from './pagination-query.dto';
 
 export function extractQueryObject<T extends object>(
   query: PaginationQueryDto & T,

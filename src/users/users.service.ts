@@ -11,16 +11,15 @@ import { envVar } from 'src/config/envVar';
 import { omit } from 'src/lib/utils/omit';
 import { ISafeUser } from './entities/user.entity';
 import { Prisma } from 'src/lib/prisma';
-interface QueryObject<T> {
-  page: number;
-  pageSize: number;
-  search?: string;
-  sort?: string;
-  filters?: T;
-}
+import { IQueryObject } from 'src/lib/common-api.types';
+import { PaginationService } from 'src/common/pagination/pagination.service';
+
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly paginator: PaginationService,
+  ) {}
   // Create User
   async create(createUserDto: CreateUserDto): Promise<ISafeUser> {
     const { name, email, password, role } = createUserDto;
@@ -48,10 +47,9 @@ export class UsersService {
 
     return safeUser;
   }
-  async findAll<T extends object>(query: QueryObject<T>) {
+  async findAll<T extends object>(query: IQueryObject<T>) {
     const { page, pageSize, search, sort, filters } = query;
-    const skip = (page - 1) * pageSize;
-    const take = pageSize;
+
     const where: Prisma.UserWhereInput = {};
     if (search) {
       where.OR = [
@@ -69,25 +67,11 @@ export class UsersService {
       orderBy['createdAt'] = 'desc';
     }
 
-    const [data, total] = await Promise.all([
-      this.prisma.user.findMany({
-        skip,
-        take,
-        where,
-        orderBy,
-      }),
-      this.prisma.user.count({ where }),
-    ]);
-    const totalPages = Math.ceil(total / take);
-    return {
-      data,
-      pagination: {
-        total,
-        page,
-        limit: take,
-        totalPages,
-      },
-    };
+    return this.paginator.paginate<IUser>(
+      { page, pageSize },
+      (skip, take) => this.prisma.user.findMany({ skip, take, where, orderBy }),
+      () => this.prisma.user.count({ where }),
+    );
   }
   async findOne(id: number): Promise<Omit<IUser, 'password'>> {
     const user = await this.prisma.user.findUnique({
