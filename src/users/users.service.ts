@@ -10,7 +10,8 @@ import * as bcrypt from 'bcrypt';
 import { envVar } from 'src/config/envVar';
 import { omit } from 'src/lib/utils/omit';
 import { ISafeUser } from './entities/user.entity';
-interface QueryObject<T = {}> {
+import { Prisma } from 'src/lib/prisma';
+interface QueryObject<T> {
   page: number;
   pageSize: number;
   search?: string;
@@ -47,11 +48,11 @@ export class UsersService {
 
     return safeUser;
   }
-  async findAll<T extends object = {}>(query: QueryObject<T>) {
+  async findAll<T extends object>(query: QueryObject<T>) {
     const { page, pageSize, search, sort, filters } = query;
     const skip = (page - 1) * pageSize;
     const take = pageSize;
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -61,12 +62,11 @@ export class UsersService {
     if (filters) {
       Object.assign(where, filters);
     }
-    const orderBy: any = {};
+    const orderBy: Prisma.UserOrderByWithRelationInput = {};
     if (sort) {
-      // You can improve this to handle asc/desc later
       orderBy[sort] = 'asc';
     } else {
-      orderBy['createdAt'] = 'desc'; // default
+      orderBy['createdAt'] = 'desc';
     }
 
     const [data, total] = await Promise.all([
@@ -88,25 +88,6 @@ export class UsersService {
         totalPages,
       },
     };
-    // const [data, total] = await Promise.all([
-    //   this.prisma.user.findMany({
-    //     skip: 1,
-    //     take: 2,
-    //     orderBy: { createdAt: 'desc' },
-    //   }),
-    //   this.prisma.user.count(),
-    // ]);
-    // const pagination = {
-    //   total,
-    //   page,
-    //   limit,
-    //   totalPages: Math.ceil(total / limit),
-    // };
-
-    // return {
-    //   data,
-    //   pagination,
-    // };
   }
   async findOne(id: number): Promise<Omit<IUser, 'password'>> {
     const user = await this.prisma.user.findUnique({
