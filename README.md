@@ -1,98 +1,77 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+###  Nest Auth Starter — Authentication Boilerplate for NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A production-ready NestJS authentication starter with JWT, Refresh Token, Prisma, and Bcrypt — designed to help you kickstart secure backend projects quickly and efficiently.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Built with NestJS, this starter project follows clean architecture and best practices for scalable authentication APIs.
 
-## Description
+###  Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- ✅ JWT Authentication (Access + Refresh Tokens)
+- ✅ Secure Password Hashing with Bcrypt
+- ✅ Refresh Token Rotation & Cookie Management
+- ✅ User Registration & Login
+- ✅ Role-Based Authorization
+- ✅ Prisma ORM Integration
+- ✅ Swagger Documentation Integration
+- ✅ TypeScript Support
+- ✅ Error Handling & Validation
+- ✅ Clean, Modular Folder Structure
 
-## Project setup
+####  Installation
 
 ```bash
-$ pnpm install
+git clone https://github.com/sakilanwar12/nest-auth
+cd nest-auth
+pnpm install
 ```
-
-## Compile and run the project
+####  Environment Setup 
+Adjust the secrets and database URL according to your setup.
+```
+cp .env.example .env
+```
+####  Running the App
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
+# dev server (watch mode)
+$ pnpm run dev
 
 # production mode
 $ pnpm run start:prod
 ```
+The app will run on:
+👉 http://localhost:3000
 
-## Run tests
+--- 
+Swagger Docs: http://localhost:3000/api/docs#/
 
-```bash
-# unit tests
-$ pnpm run test
+#### Why Use This Starter?
 
-# e2e tests
-$ pnpm run test:e2e
+- Saves hours of setup time
+- Follows NestJS best practices
+- Includes token rotation and cookie management
+- Ready for production deployment
+- Easy to extend for OAuth, 2FA, or role-based systems
 
-# test coverage
-$ pnpm run test:cov
-```
+#### Future Improvements
 
-## Deployment
+- Google / GitHub OAuth integration
+- Email verification system
+- Two-Factor Authentication (2FA)
+- Forgot / Reset password
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+#### License
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+This project is licensed under the MIT License — free to use, modify, and distribute.
+Author
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+#### Sakil Anwar
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Frontend & Backend Developer — specializing in scalable web applications
+ - [Linkedin](https://www.linkedin.com/in/md-sakil-anwar-4b6941241/)
+ - [GitHub](https://github.com/sakilanwar12)
+ - [Facebook](https://www.facebook.com/shakilahmed.omi.5)
+ 
+#### SEO Keywords
+--- 
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+NestJS authentication starter, NestJS JWT refresh token, NestJS Prisma auth, NestJS login register example, secure NestJS boilerplate, NestJS authentication with cookies, NestJS TypeScript starter, backend authentication starter.
