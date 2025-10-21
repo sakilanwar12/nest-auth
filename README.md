@@ -1,10 +1,10 @@
-🚀 Nest Auth Starter — Authentication Boilerplate for NestJS
+###  Nest Auth Starter — Authentication Boilerplate for NestJS
 
 A production-ready NestJS authentication starter with JWT, Refresh Token, Prisma, and Bcrypt — designed to help you kickstart secure backend projects quickly and efficiently.
 
 Built with NestJS, this starter project follows clean architecture and best practices for scalable authentication APIs.
 
-🧠 Features
+###  Features
 
 - ✅ JWT Authentication (Access + Refresh Tokens)
 - ✅ Secure Password Hashing with Bcrypt
@@ -17,19 +17,19 @@ Built with NestJS, this starter project follows clean architecture and best prac
 - ✅ Error Handling & Validation
 - ✅ Clean, Modular Folder Structure
 
-⚙️ Installation
+####  Installation
 
 ```bash
 git clone https://github.com/sakilanwar12/nest-auth
 cd nest-auth
-$ pnpm install
+pnpm install
 ```
-🔑 Environment Setup 
+####  Environment Setup 
 Adjust the secrets and database URL according to your setup.
 ```
 cp .env.example .env
 ```
-🚀 Running the App
+####  Running the App
 
 ```bash
 # dev server (watch mode)
@@ -44,7 +44,7 @@ The app will run on:
 --- 
 Swagger Docs: http://localhost:3000/api/docs#/
 
-💡 Why Use This Starter?
+#### Why Use This Starter?
 
 - Saves hours of setup time
 - Follows NestJS best practices
@@ -52,24 +52,26 @@ Swagger Docs: http://localhost:3000/api/docs#/
 - Ready for production deployment
 - Easy to extend for OAuth, 2FA, or role-based systems
 
-🧰 Future Improvements
+#### Future Improvements
 
 - Google / GitHub OAuth integration
 - Email verification system
 - Two-Factor Authentication (2FA)
 - Forgot / Reset password
 
-📄 License
+#### License
 
 This project is licensed under the MIT License — free to use, modify, and distribute.
 Author
 
-👨‍💻 Sakil Anwar
----
+#### Sakil Anwar
+
 Frontend & Backend Developer — specializing in scalable web applications
-🔗 LinkedIn
- • GitHub
+ - [Linkedin](https://www.linkedin.com/in/md-sakil-anwar-4b6941241/)
+ - [GitHub](https://github.com/sakilanwar12)
+ - [Facebook](https://www.facebook.com/shakilahmed.omi.5)
  
- 🧭 SEO Keywords
+#### SEO Keywords
+--- 
 
 NestJS authentication starter, NestJS JWT refresh token, NestJS Prisma auth, NestJS login register example, secure NestJS boilerplate, NestJS authentication with cookies, NestJS TypeScript starter, backend authentication starter.
