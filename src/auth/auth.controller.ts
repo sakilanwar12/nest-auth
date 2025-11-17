@@ -1,9 +1,9 @@
 import { AuthService } from './auth.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { AuthUserSchemaDto } from './schemas/auth-user.schema';
-import { AuthUserDto } from './dto/auth-user.dto';
+import { AuthUserDto, RefreshTokenDto } from './dto/auth-user.dto';
 import { apiResponse } from 'src/lib/utils/apiResponse';
-import { loginUserSchemaDto } from './schemas/login-user-schema';
+import { loginUserSchemaDto, refreshTokenSchemaDto } from './schemas/login-user-schema';
 import { Body, Controller, Post } from '@nestjs/common';
 
 @Controller('auth')
@@ -26,6 +26,19 @@ export class AuthController {
     return apiResponse({
       data: user,
       message: 'User login successfully',
+    });
+  }
+  @Post('/refresh-token')
+  @ApiResponse({
+    status: 201,
+    description: 'Get new access token',
+    type: RefreshTokenDto,
+  })
+  async refreshToken(@Body() refreshTokenSchemaDto: refreshTokenSchemaDto) {
+    const user = await this.authService.refreshToken(refreshTokenSchemaDto);
+    return apiResponse({
+      data: user,
+      message: 'Get access token successfully',
     });
   }
 }

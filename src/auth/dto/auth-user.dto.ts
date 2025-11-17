@@ -19,3 +19,8 @@ export class AuthUserDto {
   @ApiProperty({ example: '2025-10-14T12:00:00Z' })
   updatedAt: Date;
 }
+
+export class RefreshTokenDto {
+  @ApiProperty({ example: 'refresh_token' })
+  refreshToken: string;
+}

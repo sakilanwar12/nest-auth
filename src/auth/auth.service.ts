@@ -10,12 +10,13 @@ import { envVar } from 'src/config/envVar';
 import * as bcrypt from 'bcrypt';
 import { omit } from 'src/lib/utils/omit';
 import { JwtService } from '@nestjs/jwt';
+import { refreshTokenSchemaDto } from './schemas/login-user-schema';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async create(createUserDto: CreateAuthDto): Promise<ISafeAuthUser> {
     const { name, email, password, role } = createUserDto;
 
@@ -69,5 +70,19 @@ export class AuthService {
       refreshToken,
     };
     return result;
+  }
+  async refreshToken(dto: refreshTokenSchemaDto) {
+    const { refreshToken } = dto;
+
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
+      });
+      console.log(payload)
+      const accessToken = await this.jwtService.signAsync(payload);
+      return { accessToken, refreshToken };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }
