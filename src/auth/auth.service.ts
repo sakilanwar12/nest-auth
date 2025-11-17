@@ -63,13 +63,11 @@ export class AuthService {
     });
 
     const loggedInUser = omit(user, ['password']);
-    const data = {
+    const result = {
       ...loggedInUser,
       accessToken,
       refreshToken,
     };
-    return {
-      user: data,
-    };
+    return result;
   }
 }
