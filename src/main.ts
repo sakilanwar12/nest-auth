@@ -11,6 +11,8 @@ async function bootstrap() {
   setupSwagger(app);
   app.enableCors();
   await app.listen(3000);
+  console.log('Application is running on: http://localhost:3000');
+  console.log('Application docs: http://localhost:3000/api/docs');
 }
 bootstrap().catch((err) => {
   console.error('Error starting app:', err);
