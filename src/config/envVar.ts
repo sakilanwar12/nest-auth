@@ -20,4 +20,4 @@ export const envVar = {
     key: 'NEST_AUTH_REFRESH_TOKEN_EXPIRES_IN',
     type: 'string',
   }),
-};
+} as const;

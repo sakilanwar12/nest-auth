@@ -11,12 +11,13 @@ import * as bcrypt from 'bcrypt';
 import { omit } from 'src/lib/utils/omit';
 import { JwtService } from '@nestjs/jwt';
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
   async create(createUserDto: CreateAuthDto): Promise<ISafeAuthUser> {
     const { name, email, password, role } = createUserDto;
 
@@ -75,10 +76,13 @@ export class AuthService {
     const { refreshToken } = dto;
 
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
-        secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
-      });
-      console.log(payload)
+      const payload: JwtPayload = await this.jwtService.verifyAsync(
+        refreshToken,
+        {
+          secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
+        },
+      );
+      console.log(payload);
       const accessToken = await this.jwtService.signAsync(payload);
       return { accessToken, refreshToken };
     } catch (error) {

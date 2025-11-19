@@ -9,10 +9,10 @@ export const loginUserSchema = z.object({
   role: z.string().optional().default('user'),
 });
 
-export class loginUserSchemaDto extends createZodDto(loginUserSchema) { }
+export class loginUserSchemaDto extends createZodDto(loginUserSchema) {}
 
 export const refreshTokenSchema = z.object({
   refreshToken: z.string(),
 });
 
-export class refreshTokenSchemaDto extends createZodDto(refreshTokenSchema) { }
+export class refreshTokenSchemaDto extends createZodDto(refreshTokenSchema) {}

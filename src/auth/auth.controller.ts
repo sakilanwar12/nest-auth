@@ -3,7 +3,10 @@ import { ApiResponse } from '@nestjs/swagger';
 import { AuthUserSchemaDto } from './schemas/auth-user.schema';
 import { AuthUserDto, RefreshTokenDto } from './dto/auth-user.dto';
 import { apiResponse } from 'src/lib/utils/apiResponse';
-import { loginUserSchemaDto, refreshTokenSchemaDto } from './schemas/login-user-schema';
+import {
+  loginUserSchemaDto,
+  refreshTokenSchemaDto,
+} from './schemas/login-user-schema';
 import { Body, Controller, Post } from '@nestjs/common';
 
 @Controller('auth')
