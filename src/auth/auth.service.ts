@@ -11,13 +11,20 @@ import * as bcrypt from 'bcrypt';
 import { omit } from 'src/lib/utils/omit';
 import { JwtService } from '@nestjs/jwt';
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
-
+import { omitKeys } from 'js-utility-method';
+export interface JwtPayload {
+  sub: string;
+  email: string;
+  role?: string;
+  iat?: number;
+  exp?: number;
+}
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async create(createUserDto: CreateAuthDto): Promise<ISafeAuthUser> {
     const { name, email, password, role } = createUserDto;
 
@@ -76,16 +83,28 @@ export class AuthService {
     const { refreshToken } = dto;
 
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(
+      const payload: JwtPayload = await this.jwtService.verifyAsync<JwtPayload>(
         refreshToken,
         {
           secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
         },
       );
-      console.log(payload);
-      const accessToken = await this.jwtService.signAsync(payload);
+
+      // Remove iat and exp by destructuring
+      const { iat, exp, ...data } = payload;
+
+      const accessToken = await this.jwtService.signAsync(data, {
+        secret: envVar.NEST_AUTH_ACCESS_TOKEN_SECRET as string,
+        expiresIn: '15m',
+      });
+
       return { accessToken, refreshToken };
-    } catch (error) {
+    } catch (err: unknown) {
+      // Optional: narrow the error for logging
+      if (err instanceof Error) {
+        console.error('Refresh token error:', err.message);
+      }
+
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
