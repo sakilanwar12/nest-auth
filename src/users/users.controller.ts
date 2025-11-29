@@ -1,15 +1,12 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Query,
   Param,
   ParseIntPipe,
   Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './schemas/user.schemas';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiResponseDto } from 'src/lib/dtos/api-response.dto';
 import { UserDto } from './dto/user.dto';
@@ -21,14 +18,6 @@ import { PaginationQueryDto } from 'src/common/pagination/pagination-query.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // POST /users
-  @Post()
-  @ApiResponse({ status: 201, description: 'User created', type: UserDto })
-  async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
-    return apiResponse({ data: user, message: 'User created successfully' });
-  }
 
   // GET /users
   @Get()
