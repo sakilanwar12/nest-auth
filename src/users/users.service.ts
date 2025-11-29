@@ -1,14 +1,9 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from './users.interface';
-import * as bcrypt from 'bcrypt';
-import { envVar } from 'src/config/envVar';
-import { ISafeUser } from './entities/user.entity';
 import { Prisma } from 'src/lib/prisma';
 import { IQueryObject } from 'src/lib/common-api.types';
 import { PaginationService } from 'src/common/pagination/pagination.service';
@@ -19,33 +14,7 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly paginator: PaginationService,
   ) {}
-  // Create User
-  async create(createUserDto: CreateUserDto): Promise<ISafeUser> {
-    const { name, email, password, role } = createUserDto;
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
-    });
 
-    if (existingUser) {
-      throw new BadRequestException('User with this email already exists');
-    }
-    const saltRounds = envVar.PASSWORD_SALT;
-
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = {
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    };
-
-    const createdUser = await this.prisma.user.create({
-      data: user,
-    });
-    const safeUser = omitKeys(createdUser, ['password']);
-
-    return safeUser;
-  }
   async findAll<T extends object>(query: IQueryObject<T>) {
     const { page, pageSize, search, sort, filters } = query;
 

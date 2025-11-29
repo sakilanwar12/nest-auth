@@ -10,7 +10,7 @@ import { envVar } from 'src/config/envVar';
     JwtModule.register({
       secret: envVar.NEST_AUTH_ACCESS_TOKEN_SECRET as string,
       signOptions: {
-        expiresIn: envVar.NEST_AUTH_ACCESS_TOKEN_EXPIRES_IN as number,
+        expiresIn: envVar.NEST_AUTH_ACCESS_TOKEN_EXPIRES_IN as number, 
       },
     }),
   ],
@@ -18,4 +18,4 @@ import { envVar } from 'src/config/envVar';
   providers: [AuthService],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }

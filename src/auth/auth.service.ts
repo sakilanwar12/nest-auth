@@ -7,17 +7,17 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { ISafeAuthUser } from './entities/auth.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { envVar } from 'src/config/envVar';
-import { JwtService } from '@nestjs/jwt';
+
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
 import { JwtPayload } from './types';
 import { omitKeys } from 'js-utility-method';
 import PasswordUtils from 'src/lib/utils/password-utils';
+import { JwtUtils } from 'src/lib/utils/jwt.utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private jwtService: JwtService,
   ) { }
 
   /**
@@ -66,14 +66,9 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = { sub: user?.id, username: user?.name };
-
-    const accessToken = await this.jwtService.signAsync(payload);
-
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
-      expiresIn: envVar.NEST_AUTH_REFRESH_TOKEN_EXPIRES_IN as number,
-    });
+    const payload = { sub: String(user.id), email: user.email, role: user.role };
+    const accessToken = await JwtUtils.accessToken(payload);
+    const refreshToken = await JwtUtils.refreshToken(payload);
 
     const loggedInUser = omitKeys(user, ['password']);
     const result = {
@@ -87,20 +82,12 @@ export class AuthService {
     const { refreshToken } = dto;
 
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync<JwtPayload>(
-        refreshToken,
-        {
-          secret: envVar.NEST_AUTH_REFRESH_TOKEN_SECRET as string,
-        },
-      );
+      const payload = await JwtUtils.verifyRefreshToken(refreshToken);
 
       // Remove iat and exp by destructuring
       const { iat, exp, ...data } = payload;
 
-      const accessToken = await this.jwtService.signAsync(data, {
-        secret: envVar.NEST_AUTH_ACCESS_TOKEN_SECRET as string,
-        expiresIn: '15m',
-      });
+      const accessToken = await JwtUtils.accessToken(data);
 
       return { accessToken, refreshToken };
     } catch (err: unknown) {

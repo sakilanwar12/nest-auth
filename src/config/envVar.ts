@@ -14,7 +14,7 @@ export const envVar = {
   }),
   NEST_AUTH_ACCESS_TOKEN_EXPIRES_IN: getEnvVar({
     key: 'NEST_AUTH_ACCESS_TOKEN_EXPIRES_IN',
-    type: 'string',
+    type: 'number',
   }),
   NEST_AUTH_REFRESH_TOKEN_EXPIRES_IN: getEnvVar({
     key: 'NEST_AUTH_REFRESH_TOKEN_EXPIRES_IN',
