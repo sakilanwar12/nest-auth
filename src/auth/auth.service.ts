@@ -11,7 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
 import { JwtPayload } from './types';
 import { omitKeys } from 'js-utility-method';
-import { passwordUtils } from 'src/lib/utils/password-utils';
+import PasswordUtils from 'src/lib/utils/password-utils';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -36,7 +37,7 @@ export class AuthService {
     const user = {
       name,
       email,
-      password: await passwordUtils.passwordHash(password),
+      password: await PasswordUtils.hash(password),
       role,
     };
 
@@ -59,8 +60,8 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    
-    const isPasswordValid = await passwordUtils.passwordCompare(password, user.password);
+
+    const isPasswordValid = await PasswordUtils.compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
