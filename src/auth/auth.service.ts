@@ -7,18 +7,11 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { ISafeAuthUser } from './entities/auth.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { envVar } from 'src/config/envVar';
-import * as bcrypt from 'bcrypt';
-import { omit } from 'src/lib/utils/omit';
+import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
+import { JwtPayload } from './types';
 import { omitKeys } from 'js-utility-method';
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  role?: string;
-  iat?: number;
-  exp?: number;
-}
 @Injectable()
 export class AuthService {
   constructor(
@@ -48,7 +41,7 @@ export class AuthService {
     const createdUser = await this.prisma.user.create({
       data: user,
     });
-    const safeUser = omit(createdUser, ['password']);
+    const safeUser = omitKeys(createdUser, ['password']);
 
     return safeUser;
   }
@@ -71,7 +64,7 @@ export class AuthService {
       expiresIn: envVar.NEST_AUTH_REFRESH_TOKEN_EXPIRES_IN as number,
     });
 
-    const loggedInUser = omit(user, ['password']);
+    const loggedInUser = omitKeys(user, ['password']);
     const result = {
       ...loggedInUser,
       accessToken,

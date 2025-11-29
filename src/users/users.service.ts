@@ -8,12 +8,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { IUser } from './users.interface';
 import * as bcrypt from 'bcrypt';
 import { envVar } from 'src/config/envVar';
-import { omit } from 'src/lib/utils/omit';
 import { ISafeUser } from './entities/user.entity';
 import { Prisma } from 'src/lib/prisma';
 import { IQueryObject } from 'src/lib/common-api.types';
 import { PaginationService } from 'src/common/pagination/pagination.service';
-
+import { omitKeys } from 'js-utility-method';
 @Injectable()
 export class UsersService {
   constructor(
@@ -43,7 +42,7 @@ export class UsersService {
     const createdUser = await this.prisma.user.create({
       data: user,
     });
-    const safeUser = omit(createdUser, ['password']);
+    const safeUser = omitKeys(createdUser, ['password']);
 
     return safeUser;
   }
@@ -81,7 +80,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    const safeUser = omit(user, ['password']);
+    const safeUser = omitKeys(user, ['password']);
 
     return safeUser;
   }
@@ -93,7 +92,7 @@ export class UsersService {
 
     const deletedUser = await this.prisma.user.delete({ where: { id } });
 
-    const safeUser = omit(deletedUser, ['password']);
+    const safeUser = omitKeys(deletedUser, ['password']);
 
     return safeUser;
   }
