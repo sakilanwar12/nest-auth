@@ -7,17 +7,21 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { ISafeAuthUser } from './entities/auth.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { envVar } from 'src/config/envVar';
-import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { refreshTokenSchemaDto } from './schemas/login-user-schema';
 import { JwtPayload } from './types';
 import { omitKeys } from 'js-utility-method';
+import { passwordUtils } from 'src/lib/utils/password-utils';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private jwtService: JwtService,
   ) { }
+
+  /**
+   * Create a new user
+   */
   async create(createUserDto: CreateAuthDto): Promise<ISafeAuthUser> {
     const { name, email, password, role } = createUserDto;
 
@@ -28,30 +32,36 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('User with this email already exists');
     }
-    const saltRounds = envVar.PASSWORD_SALT;
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
     const user = {
       name,
       email,
-      password: hashedPassword,
+      password: await passwordUtils.passwordHash(password),
       role,
     };
 
     const createdUser = await this.prisma.user.create({
       data: user,
     });
-    const safeUser = omitKeys(createdUser, ['password']);
 
-    return safeUser;
+    return omitKeys(createdUser, ['password']);
   }
+  /**
+   * Login a user
+   * @param dto 
+   * @returns 
+   */
   async login(dto: { email: string; password: string }) {
     const { email, password } = dto;
 
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    
+    const isPasswordValid = await passwordUtils.passwordCompare(password, user.password);
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
